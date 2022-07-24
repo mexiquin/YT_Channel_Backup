@@ -11,7 +11,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["scrape", "https://www.youtube.com/c/QuintonJasper/featured"]
+            "args": ["scrape", "https://www.youtube.com/c/QuintonJasper"]
         }
     ]
 }
