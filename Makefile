@@ -11,5 +11,5 @@ channelbackup: channel-backup.py
 clean:
 	for line in $$(awk -F= '{print $$1}' requirements.txt); do $$(pip-autoremove -y $${line}); done
 	pip-autoremove -y poetry pyinstaller
-	pip uninstall pip-autoremove
+	pip uninstall -y pip-autoremove
 	rm -rf build dist geckodriver.log .pytest_cache channel-backup.spec requirements.txt

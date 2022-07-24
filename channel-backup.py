@@ -1,32 +1,37 @@
 #!/usr/bin/env python3
 
 import argparse
-from typing import Generator, Iterable
-import pandas as pd
 import logging
-from selenium import webdriver
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from webdriver_manager.firefox import GeckoDriverManager
+import os
+import sys
 import time
-from selenium.webdriver.support.wait import WebDriverWait
+from typing import Generator, Iterable
+
+import pandas as pd
+from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.support.expected_conditions import *
-import sys 
+from selenium.webdriver.support.wait import WebDriverWait
+from webdriver_manager.firefox import GeckoDriverManager
 
 logging.basicConfig(level=logging.INFO)
 
 def get_channel_name(url: str):
-    return url.split('/')[-1]
+    return url.split("/")[-1]
+
 
 def channel_scan(url: str) -> Generator:
     """Use selenium to scan whole channel videos section for urls"""
 
     driver.get(url)
-    channel_name = get_channel_name(url)
 
     # Go to videos tab
-    video_button: WebElement = wait.until(presence_of_element_located((By.XPATH, '//tp-yt-paper-tab/div[text()[contains(., "Videos")]]')))
+    video_button: WebElement = wait.until(
+        presence_of_element_located(
+            (By.XPATH, '//tp-yt-paper-tab/div[text()[contains(., "Videos")]]')
+        )
+    )
     video_button.click()
     logging.debug("Clicking into 'Videos' tab...")
     driver.implicitly_wait(2)
@@ -35,20 +40,32 @@ def channel_scan(url: str) -> Generator:
     logging.info("Scanning for videos...")
     while True:
         scroll_height = 3000
-        document_height_before = driver.execute_script("return document.documentElement.scrollHeight")
-        driver.execute_script(f"window.scrollTo(0, {document_height_before + scroll_height});")
+        document_height_before = driver.execute_script(
+            "return document.documentElement.scrollHeight"
+        )
+        driver.execute_script(
+            f"window.scrollTo(0, {document_height_before + scroll_height});"
+        )
         time.sleep(10)
-        document_height_after = driver.execute_script("return document.documentElement.scrollHeight")
+        document_height_after = driver.execute_script(
+            "return document.documentElement.scrollHeight"
+        )
         if document_height_after == document_height_before:
             break
 
     # get list of video urls on the page
-    elements: list[WebElement] = wait.until(presence_of_all_elements_located((By.XPATH, '//a[@id="video-title"]')))
+    elements: list[WebElement] = wait.until(
+        presence_of_all_elements_located((By.XPATH, '//a[@id="video-title"]'))
+    )
     logging.info(f"Num identified videos: {len(elements)}")
-    
 
-
-    main_dict = ({"title": element.get_attribute('title').replace(',', ' '), "url": element.get_attribute('href')} for element in elements)
+    main_dict = (
+        {
+            "title": element.get_attribute("title").replace(",", " "),
+            "url": element.get_attribute("href"),
+        }
+        for element in elements
+    )
 
     return main_dict
 
@@ -57,7 +74,10 @@ def print_data(data_structure: Iterable):
     """Print the collected datastructure of youtube metadata to the specified format to stdout"""
 
     logging.info("Outputting to stdout")
-    pd.DataFrame(list(data_structure), columns=['title', 'url'], ).to_csv(sys.stdout)
+    pd.DataFrame(
+        list(data_structure),
+        columns=["title", "url"],
+    ).to_csv(sys.stdout)
 
 
 def main():
@@ -95,13 +115,20 @@ def main():
 
     # scan for videos and output formatted data to stdout
     if args.channel_url:
+        from selenium.webdriver.firefox.options import Options
+
         logging.debug("Downloading firefox geckodriver...")
-        global driver 
-        driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
-        global wait 
+        options = Options()
+        options.headless = True
+        global driver
+        driver = webdriver.Firefox(
+            service=FirefoxService(GeckoDriverManager().install()), options=options
+        )
+        global wait
         wait = WebDriverWait(driver, 15)
         print_data(channel_scan(args.channel_url))
         driver.close()
+
 
 if __name__ == "__main__":
     main()
