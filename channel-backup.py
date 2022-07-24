@@ -37,7 +37,7 @@ def channel_scan(url: str) -> Generator:
         scroll_height = 3000
         document_height_before = driver.execute_script("return document.documentElement.scrollHeight")
         driver.execute_script(f"window.scrollTo(0, {document_height_before + scroll_height});")
-        time.sleep(7)
+        time.sleep(10)
         document_height_after = driver.execute_script("return document.documentElement.scrollHeight")
         if document_height_after == document_height_before:
             break
