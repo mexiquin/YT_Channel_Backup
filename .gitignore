@@ -3,3 +3,4 @@
 *.spec
 /.venv
 /.pytest_cache
+geckodriver.log
