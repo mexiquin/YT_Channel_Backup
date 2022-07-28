@@ -2,10 +2,10 @@
 
 import argparse
 import logging
-import os
 import sys
 import time
 from typing import Generator, Iterable
+import youtube_dl
 
 import pandas as pd
 from selenium import webdriver
@@ -15,7 +15,6 @@ from selenium.webdriver.support.expected_conditions import *
 from selenium.webdriver.support.wait import WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
 
-logging.basicConfig(level=logging.INFO)
 
 def get_channel_name(url: str):
     return url.split("/")[-1]
@@ -104,7 +103,18 @@ def main():
         "download",
         help="Using the generated data file, download videos from the scraped YouTube channel.",
     )
-    downloader.add_argument("data_file", type=str)
+    downloader.add_argument(
+        "urls",
+        type=str,
+        nargs="+",
+        help="url(s) that will be downloaded by the program",
+    )
+    downloader.add_argument(
+        "-o",
+        type=str,
+        help="destination folder where video(s) will be stored",
+        required=True,
+    )
     downloader.add_argument("-a", "--audio-only", type=bool, default=False)
 
     # extra commands
@@ -112,6 +122,8 @@ def main():
         "-v", "--verbose", help="Print more info to console", default=False, type=bool
     )
     args = parser.parse_args()
+
+    logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
 
     # scan for videos and output formatted data to stdout
     if args.channel_url:
@@ -128,6 +140,10 @@ def main():
         wait = WebDriverWait(driver, 15)
         print_data(channel_scan(args.channel_url))
         driver.close()
+
+    # handle download functionality: archive specified video urls
+    if args.urls:
+        raise NotImplementedError
 
 
 if __name__ == "__main__":
