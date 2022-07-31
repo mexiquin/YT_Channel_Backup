@@ -40,23 +40,33 @@ dependencies:
   - python-dateutil=2.8.2=pyhd3eb1b0_0
   - pytz=2022.1=py310h06a4308_0
   - readline=8.1.2=h7f8727e_1
-  - selenium=3.141.0=py310h7f8727e_1000
   - setuptools=61.2.0=py310h06a4308_0
   - six=1.16.0=pyhd3eb1b0_1
   - sqlite=3.38.5=hc218d9a_0
   - tk=8.6.12=h1ccaba5_0
   - tzdata=2022a=hda174b7_0
-  - urllib3=1.26.9=py310h06a4308_0
+  - urllib3=1.26.11=py310h06a4308_0
   - wheel=0.37.1=pyhd3eb1b0_0
   - xz=5.2.5=h7f8727e_1
   - zlib=1.2.12=h7f8727e_2
   - pip:
     - altgraph==0.17.2
+    - async-generator==1.10
+    - attrs==22.1.0
     - charset-normalizer==2.1.0
+    - h11==0.13.0
+    - outcome==1.2.0
     - pyinstaller==5.2
     - pyinstaller-hooks-contrib==2022.8
     - python-dotenv==0.20.0
     - requests==2.28.1
-    - webdriver-manager==3.8.2
+    - selenium==4.3.0
+    - sniffio==1.2.0
+    - sortedcontainers==2.4.0
+    - tqdm==4.64.0
+    - trio==0.21.0
+    - trio-websocket==0.9.2
+    - webdriver-manager==3.8.3
+    - wsproto==1.1.0
     - youtube-dl==2021.12.17
 prefix: /home/quinton/anaconda3/envs/channel-backup

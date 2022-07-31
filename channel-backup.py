@@ -143,7 +143,8 @@ def main():
 
     # handle download functionality: archive specified video urls
     if args.urls:
-        raise NotImplementedError
+        for urls in args.urls:
+            raise NotImplementedError
 
 
 if __name__ == "__main__":
