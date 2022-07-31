@@ -126,25 +126,27 @@ def main():
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
 
     # scan for videos and output formatted data to stdout
-    if args.channel_url:
-        from selenium.webdriver.firefox.options import Options
+    try:
+        if args.channel_url:
+            from selenium.webdriver.firefox.options import Options
 
-        logging.debug("Downloading firefox geckodriver...")
-        options = Options()
-        options.headless = True
-        global driver
-        driver = webdriver.Firefox(
-            service=FirefoxService(GeckoDriverManager().install()), options=options
-        )
-        global wait
-        wait = WebDriverWait(driver, 15)
-        print_data(channel_scan(args.channel_url))
-        driver.close()
+            logging.debug("Downloading firefox geckodriver...")
+            options = Options()
+            options.headless = True
+            global driver
+            driver = webdriver.Firefox(
+                service=FirefoxService(GeckoDriverManager().install()), options=options
+            )
+            global wait
+            wait = WebDriverWait(driver, 15)
+            print_data(channel_scan(args.channel_url))
+            driver.close()
+    except:
 
-    # handle download functionality: archive specified video urls
-    if args.urls:
-        for urls in args.urls:
-            raise NotImplementedError
+        # handle download functionality: archive specified video urls
+        if args.urls:
+            for urls in args.urls:
+                raise NotImplementedError
 
 
 if __name__ == "__main__":
