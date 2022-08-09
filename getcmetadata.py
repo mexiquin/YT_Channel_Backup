@@ -83,71 +83,39 @@ def main():
 
     # argument parsing handler
     parser = argparse.ArgumentParser(
-        description="Inputting a channel url into the program, search that entire channel for videos and return a json of title, description, and url for later download/storage"
+        description="Inputting a channel url into the program, search that entire channel for videos and return a csv of title, description, and url for later download/storage"
     )
-    subcommands = parser.add_subparsers()
 
-    # data scraping command
-    scraper = subcommands.add_parser(
-        "scrape",
-        help="Scrape the inputted YouTube channel url for all video metadata. Formatted data sent to stdout.",
-    )
-    scraper.add_argument(
+    # data scraping command 
+    parser.add_argument(
         "channel_url",
-        help="The URL of the channel(s) that will be scraped",
+        help="The URL of the channel that will be scraped",
         type=str,
     )
-
-    # video download command
-    downloader = subcommands.add_parser(
-        "download",
-        help="Using the generated data file, download videos from the scraped YouTube channel.",
-    )
-    downloader.add_argument(
-        "urls",
-        type=str,
-        nargs="+",
-        help="url(s) that will be downloaded by the program",
-    )
-    downloader.add_argument(
-        "-o",
-        type=str,
-        help="destination folder where video(s) will be stored",
-        required=True,
-    )
-    downloader.add_argument("-a", "--audio-only", type=bool, default=False)
 
     # extra commands
     parser.add_argument(
         "-v", "--verbose", help="Print more info to console", default=False, type=bool
     )
-    args = parser.parse_args()
 
+
+    args = parser.parse_args()
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO)
 
     # scan for videos and output formatted data to stdout
-    try:
-        if args.channel_url:
-            from selenium.webdriver.firefox.options import Options
+    from selenium.webdriver.firefox.options import Options
 
-            logging.debug("Downloading firefox geckodriver...")
-            options = Options()
-            options.headless = True
-            global driver
-            driver = webdriver.Firefox(
-                service=FirefoxService(GeckoDriverManager().install()), options=options
-            )
-            global wait
-            wait = WebDriverWait(driver, 15)
-            print_data(channel_scan(args.channel_url))
-            driver.close()
-    except:
-
-        # handle download functionality: archive specified video urls
-        if args.urls:
-            for urls in args.urls:
-                raise NotImplementedError
-
+    logging.debug("Downloading firefox geckodriver...")
+    options = Options()
+    options.headless = True
+    global driver
+    driver = webdriver.Firefox(
+        service=FirefoxService(GeckoDriverManager().install()), options=options
+    )
+    global wait
+    wait = WebDriverWait(driver, 15)
+    print_data(channel_scan(args.channel_url))
+    driver.close()
 
 if __name__ == "__main__":
     main()
